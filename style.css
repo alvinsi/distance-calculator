@@ -1,0 +1,11 @@
+body {
+	text-align: center;
+}
+.estResult {
+	font-weight: bold;
+	color: #AE3143;
+}
+#contentBody {
+  position: relative;
+  top: 60px;
+}

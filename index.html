@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="maxApp">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Distance Calculator</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <div class="container">
+      <div ng-controller = "mainController">  
+        <div class="container jumbotron" id="contentBody">
+
+          <h2 id="title">Distance Calculator</h2>
+
+          <label for="autocompleteFrom">Source</label>
+          <input type="text" class="form-control" id="autocompleteFrom" placeholder="Enter Source..." ng-model="fromUpdated">
+
+          <br>
+
+          <label for="autocompleteTo">Destination</label>
+          <input type="text" class="form-control" id="autocompleteTo" placeholder="Enter Destination..." ng-model="toUpdated">
+
+          <br>
+
+          <button class="btn btn-success center-block" ng-click="calculate()" id="calculate">Calculate</button>
+
+          <hr>
+
+          <div id="result">
+            <h4>Estimated Time: 
+              <div class="estResult" ng-cloak>
+                {{estTime}}
+              </div>
+            </h4>
+            <h4>Estimated Distance: 
+              <div class="estResult" ng-cloak>
+                {{estDist}}
+              </div>
+            </h4>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-messages.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular-resource.min.js"></script>
+    <script src="app.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCtBRLsMk9pVw7q7nCAjazKRTzf5J5fi9A&signed_in=false&libraries=places&callback=initAutocomplete" async defer></script>
+  </body>
+</html>
