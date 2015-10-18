@@ -6,9 +6,12 @@ var minTotal = 0;
 /**
 * Loading Module Dependencies
 */
-var maxApp = angular.module('maxApp', ['ngMessages', 'ngResource']);
+var distCalcApp = angular.module('distCalculator', ['ngMessages', 'ngResource']);
 
-maxApp.config(function($interpolateProvider) {
+/**
+* Change Start and End Symbol for Angular to avoid conflict with Handlebars
+*/
+distCalcApp.config(function($interpolateProvider) {
   $interpolateProvider.startSymbol('{[{');
   $interpolateProvider.endSymbol('}]}');
 });
@@ -16,7 +19,7 @@ maxApp.config(function($interpolateProvider) {
 /**
 * Dependency Injection
 */
-maxApp.controller('mainController', ['$scope', '$http', function($scope, $http){
+distCalcApp.controller('mainController', ['$scope', '$http', function($scope, $http){
 	$scope.estDist = "";
 	$scope.estTime = "";
 
@@ -88,13 +91,6 @@ function fillInTo() {
 * Estimate Distance and Duration of Travel
 */
 function estimateResult(result, callback) {
-	console.log("Alternatives: " + result.routes.length);
-
-	for (var i = 0; i < result.routes.length; i++) {
-		console.log("Route " + (i + 1) + ":");
-		console.log("Distance: "+ result.routes[i].legs[0].distance.text + ", Duration: " + result.routes[i].legs[0].duration.text);
-	}
-
 	if (result.routes.length % 2 == 0) {
 		// Take Average
 		if (result.routes.length == 0) {
@@ -146,7 +142,6 @@ function estimateResult(result, callback) {
 			estTime = result.routes[idx].legs[0].duration.text;
 		}
 	}
-
 	return callback();
 }
 
