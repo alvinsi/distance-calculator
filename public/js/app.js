@@ -70,7 +70,7 @@ function fillInFrom() {
     window.alert("Autocomplete's returned place contains no geometry");
     return;
   } else {
-  	origin = place.name;
+  	origin = place.geometry.location;
   }
 }
 
@@ -83,7 +83,7 @@ function fillInTo() {
     window.alert("Autocomplete's returned place contains no geometry");
     return;
   } else {
-  	destination = place.name;
+  	destination = place.geometry.location;
   }
 }
 
