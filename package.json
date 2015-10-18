@@ -1,0 +1,27 @@
+{
+  "name": "distance-calculator",
+  "version": "1.0.0",
+  "description": "Helps you estimate distance from point A to point B",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alvinsi/distance-calculator.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.13.3",
+    "cors": "^2.7.1",
+    "express": "^4.13.3",
+    "express3-handlebars": "^0.5.2",
+    "request": "^2.64.0",
+    "underscore": "^1.8.3"
+  },
+  "bugs": {
+    "url": "https://github.com/alvinsi/distance-calculator/issues"
+  },
+  "homepage": "https://github.com/alvinsi/distance-calculator#readme"
+}

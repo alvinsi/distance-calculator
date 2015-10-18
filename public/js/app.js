@@ -1,37 +1,48 @@
-var autocompleteFrom, autocompleteTo, lon, lat, fromUpdated, toUpdated, estDist, estTime;
+var autocompleteFrom, autocompleteTo, estDist, estTime, directionsService, origin, destination;
 var dayTotal = 0;
 var	hourTotal = 0;
 var minTotal = 0;
 
-/* Loading Module Dependencies
+/**
+* Loading Module Dependencies
 */
 var maxApp = angular.module('maxApp', ['ngMessages', 'ngResource']);
 
-/* Dependency Injection
+maxApp.config(function($interpolateProvider) {
+  $interpolateProvider.startSymbol('{[{');
+  $interpolateProvider.endSymbol('}]}');
+});
+
+/**
+* Dependency Injection
 */
 maxApp.controller('mainController', ['$scope', '$http', function($scope, $http){
-	$scope.fromUpdated = "";
-	$scope.toUpdated = "";
 	$scope.estDist = "";
 	$scope.estTime = "";
 
  	$scope.calculate = function() {
-	 	var url = 'http://maps.googleapis.com/maps/api/directions/json?origin=' + fromUpdated + '&destination=' + toUpdated + '&units=imperial&alternatives=true&sensor=false';
+	 	var request = {
+      origin: origin,
+      destination: destination,
+      provideRouteAlternatives: true,
+      travelMode: google.maps.TravelMode.DRIVING
+	  };
 
-		$http.get(url)
-		.success(function(result) {
-			estimateResult(result, function() {
-				$scope.estDist = estDist;
-				$scope.estTime = estTime;
-			});
-		})
-		.error(function(data, status) {
-			console.log(data);
-		});
+	  directionsService.route(request, function(response, status) {
+	    if (status == google.maps.DirectionsStatus.OK) {
+		    $scope.$apply(function() {
+		    	estimateResult(response, function() {
+						$scope.estDist = estDist;
+						$scope.estTime = estTime;
+					});
+		    }); 
+	    }
+	  });
  	};
 }]);
 
-/* Initialize Autocomplete
+/**
+* Initialize Autocomplete
 */
 function initAutocomplete() {
   autocompleteFrom = new google.maps.places.Autocomplete((document.getElementById('autocompleteFrom')),{
@@ -42,9 +53,13 @@ function initAutocomplete() {
   });
   autocompleteFrom.addListener('place_changed', fillInFrom);
   autocompleteTo.addListener('place_changed', fillInTo);
+
+  // Direction Service
+  directionsService = new google.maps.DirectionsService();
 }
 
-/* Autocomplete for Source
+/**
+* Autocomplete for Source
 */
 function fillInFrom() {
 	var place = autocompleteFrom.getPlace();
@@ -52,14 +67,12 @@ function fillInFrom() {
     window.alert("Autocomplete's returned place contains no geometry");
     return;
   } else {
-  	var coords = place.geometry.location;
-	  lat = coords.lat();
-	  lon = coords.lng();
-	  fromUpdated = lat + "," + lon;
+  	origin = place.name;
   }
 }
 
-/* Autocomplete for Destination
+/**
+* Autocomplete for Destination
 */
 function fillInTo() {
 	var place = autocompleteTo.getPlace();
@@ -67,14 +80,12 @@ function fillInTo() {
     window.alert("Autocomplete's returned place contains no geometry");
     return;
   } else {
-  	var coords = place.geometry.location;
-	  lat = coords.lat();
-	  lon = coords.lng();
-	 	toUpdated = lat + "," + lon;
+  	destination = place.name;
   }
 }
 
-/* Estimate Distance and Duration of Travel
+/**
+* Estimate Distance and Duration of Travel
 */
 function estimateResult(result, callback) {
 	console.log("Alternatives: " + result.routes.length);
@@ -91,16 +102,20 @@ function estimateResult(result, callback) {
 		} else {
 			var totalDist = 0;
 
+			dayTotal = 0;
+			hourTotal = 0;
+			minTotal = 0;
+
 			for (var i = 0; i < result.routes.length; i++) {
-				var tempDist = result.routes[0].legs[0].distance.text;
-				totalDist += parseFloat(tempDist.substring(0, tempDist.length - 3));
+				var tempDist = result.routes[i].legs[0].distance.text;
+				totalDist += parseFloat(tempDist.replace(",",""));
 
 				var tempTime = result.routes[i].legs[0].duration.text;
 				calculateTime(tempTime);
 			}
 
 			estDist = (totalDist / result.routes.length) + " mi";
-			
+
 			if (dayTotal > 0) {
 				estTime = dayTotal / result.routes.length + " days ";
 				if (hourTotal > 0) {
@@ -135,13 +150,14 @@ function estimateResult(result, callback) {
 	return callback();
 }
 
-/* Sums the Time to the Current Total
+/**
+* Sums the Time to the Current Total
 */
 function calculateTime(testTime) {
 	var dayIndex = testTime.indexOf("day");
 	var hourIndex = testTime.indexOf("hour");
 	var minIndex = testTime.indexOf("min");
-	
+
 	if (dayIndex !== -1) {
 		dayTotal += parseFloat(testTime);
 		if (hourIndex !== -1) {
