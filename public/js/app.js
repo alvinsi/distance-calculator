@@ -9,14 +9,6 @@ var minTotal = 0;
 var distCalcApp = angular.module('distCalculator', ['ngMessages', 'ngResource']);
 
 /**
- * Change Start and End Symbol for Angular to avoid conflict with Handlebars
- */
-distCalcApp.config(function($interpolateProvider) {
-	$interpolateProvider.startSymbol('{[{');
-	$interpolateProvider.endSymbol('}]}');
-});
-
-/**
  * Dependency Injection
  */
 distCalcApp.controller('mainController', ['$scope', '$http', function($scope, $http) {
